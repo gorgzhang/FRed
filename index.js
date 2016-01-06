@@ -1,14 +1,18 @@
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
-var BotkitStorage = require('botkit-storage-redis');
+var BotkitStorage = require('botkit-storage-mongo');
 
 if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   console.log('Error: Specify clientId clientSecret and port in environment');
   process.exit(1);
 }
 
+var storageConfig = {
+  mongoUri: process.env.MONGOLAB_URI
+};
+
 var controller = Botkit.slackbot({
-  storage: BotkitStorage(process.env.REDIS_URL)
+  storage: BotkitStorage(storageConfig)
 }).configureSlackApp(
   {
     clientId: process.env.clientId,
