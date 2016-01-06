@@ -1,0 +1,30 @@
+{
+  "name": "My Magic Bot",
+  "version": "1.0.0",
+  "description": "The awesomest bot evar.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DEGoodmanWilson/botkit-heroku-template.git"
+  },
+  "keywords": [
+    "slack",
+    "bot"
+  ],
+  "author": "D.E. Goodman-Wilson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/DEGoodmanWilson/botkit-heroku/issues"
+  },
+  "homepage": "https://github.com/DEGoodmanWilson/botkit-heroku#readme",
+  "engines": {
+    "node": "5.1.1"
+  },
+  "dependencies": {
+    "botkit": "0.0.5",
+    "botkit-storage-redis": "^1.0.0"
+  }
+}
