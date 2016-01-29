@@ -82,6 +82,9 @@ controller.on('rtm_close',function(bot) {
   // you may want to attempt to re-open
 });
 
+
+// BEGIN EDITING HERE!
+
 controller.hears('hello','direct_message',function(bot,message) {
   bot.reply(message,'Hello!');
 });
