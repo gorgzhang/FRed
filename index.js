@@ -1,8 +1,8 @@
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
 
-if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
-  console.log('Error: Specify clientId clientSecret and port in environment');
+if (!process.env.CLIENT_ID || !process.env.CLIENT_ID || !process.env.PORT) {
+  console.log('Error: Specify CLIENT_ID, CLIENT_ID, and PORT in environment');
   process.exit(1);
 }
 
@@ -20,8 +20,8 @@ if(process.env.MONGOLAB_URI) {
 
 var controller = Botkit.slackbot(config).configureSlackApp(
   {
-    clientId: process.env.clientId,
-    clientSecret: process.env.clientSecret,
+    clientId: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
     scopes: ['bot'],
   }
 );
