@@ -1,7 +1,7 @@
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
 var beepBoop = false;
-var slackToken = process.env.SLACK_TOKEN
+var slackToken = process.env.SLACK_TOKEN;
 
 
 
@@ -52,7 +52,7 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
 });
 }
 else{
-  var controller = Botkit.slackbot(config);
+  var controller = Botkit.slackbot();
 }
 
 // just a simple way to make sure we don't
