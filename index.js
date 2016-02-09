@@ -1,6 +1,6 @@
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
-
+var 
 var slackToken = process.env.SLACK_TOKEN
 if (!slackToken) {
   console.error('SLACK_TOKEN is required!')
@@ -8,10 +8,16 @@ if (!slackToken) {
 }
 
 
-if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
+if (slackToken)
+{
+  beepBoop = true;
+}
+else if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
   console.log('Error: Specify clientId clientSecret and port in environment');
   process.exit(1);
 }
+
+
 
 var config = {}
 if(process.env.MONGOLAB_URI) {
@@ -25,14 +31,16 @@ if(process.env.MONGOLAB_URI) {
   };
 }
 
-var controller = Botkit.slackbot(config).configureSlackApp(
+
+
+if (!beepBoop){
+  var controller = Botkit.slackbot(config).configureSlackApp(
   {
     clientId: process.env.clientId,
     clientSecret: process.env.clientSecret,
     scopes: ['bot'],
   }
 );
-
 controller.setupWebserver(process.env.PORT,function(err,webserver) {
   controller.createWebhookEndpoints(controller.webserver);
 
@@ -44,7 +52,10 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     }
   });
 });
-
+}
+else{
+  var controller = Botkit.slackbot(config);
+}
 
 // just a simple way to make sure we don't
 // connect to the RTM twice for the same team
