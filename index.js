@@ -1,6 +1,6 @@
 /* Uses the slack button feature to offer a real time bot to multiple teams */
 var Botkit = require('botkit');
-var 
+var beepBoop;
 var slackToken = process.env.SLACK_TOKEN
 if (!slackToken) {
   console.error('SLACK_TOKEN is required!')
