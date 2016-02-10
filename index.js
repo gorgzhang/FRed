@@ -83,12 +83,14 @@ function trackBot(bot) {
    });
 
  });
+
+/*
 controller.on('create_bot',function(bot,config) {
 /*
   if (_bots[bot.config.token]) {
     // already online! do nothing.
   } else {
-*/
+
     bot.startRTM(function(err, bot, payload) {
 
 
@@ -104,6 +106,7 @@ controller.on('create_bot',function(bot,config) {
     });
   // }
 });
+ */
 
 
 // Handle events related to the websocket connection to Slack
@@ -161,3 +164,4 @@ controller.storage.teams.all(function(err,teams) {
 
 });
 
+*/
