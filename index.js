@@ -61,7 +61,13 @@ else{
 });
 
 
+    if (_bots[slackToken]) {
+        // already online! do nothing.
+    } else {
 
+        if (!err) {
+
+        }
 
         var bot = controller.spawn({
             token: slackToken
@@ -71,7 +77,7 @@ else{
         bot.startRTM(function(err, bot, payload) {
 
 
-            bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
+            bot.startPrivateConversation({user: bot.config.createdBy},function(err,convo) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -81,7 +87,7 @@ else{
             });
 
         });
-
+    }
 
 
 
