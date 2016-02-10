@@ -16,7 +16,7 @@ else if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT
 
 console.log(beepBoop)
 
-/*
+
 var config = {}
 if(process.env.MONGOLAB_URI) {
   var BotkitStorage = require('botkit-storage-mongo');
@@ -28,7 +28,7 @@ if(process.env.MONGOLAB_URI) {
     json_file_store: './db_slackbutton_bot/',
   };
 }
-*/
+
 
 
 if (!beepBoop){
@@ -91,7 +91,7 @@ controller.on('create_bot',function(bot,config) {
 
     });
   }
-}s);
+});
 
 
 // Handle events related to the websocket connection to Slack
