@@ -3,7 +3,11 @@ var Botkit = require('botkit');
 var beepBoop = false;
 var slackToken = process.env.SLACK_TOKEN;
 
+var _bots = {};
 
+function trackBot(bot) {
+    _bots[bot.config.token] = bot;
+}
 
 if (slackToken)
 {
@@ -55,19 +59,44 @@ else{
   var controller = Botkit.slackbot({
   json_file_store: './db_slackbutton_bot/',
 });
-var bot = controller.spawn({
-  token: slackToken
-})
+
+
+    if (_bots[slackToken]) {
+        // already online! do nothing.
+    } else {
+
+        if (!err) {
+            var bot = controller.spawn({
+                token: slackToken
+            })
+            trackBot(bot);
+        }
+
+        bot.startRTM(function(err, bot, payload) {
+
+
+            bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    convo.say('I am a bot that has just joined your team');
+                    convo.say('You must now /invite me to a channel so that I can be of use!');
+                }
+            });
+
+        });
+    }
+
+
+
+
 }
 
 console.log(bot.config.token)
 // just a simple way to make sure we don't
 // connect to the RTM twice for the same team
 
-var _bots = {};
-function trackBot(bot) {
-  _bots[bot.config.token] = bot;
-}
+
 
 
 
