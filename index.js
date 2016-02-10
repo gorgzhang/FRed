@@ -75,11 +75,8 @@ controller.on('create_bot',function(bot,config) {
     // already online! do nothing.
   } else {
 */
-    bot.startRTM(function(err) {
+    bot.startRTM(function(err, bot, payload) {
 
-      if (!err) {
-        trackBot(bot);
-      }
 
       bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
         if (err) {
@@ -128,6 +125,7 @@ controller.on('direct_message,mention,direct_mention',function(bot,message) {
   });
 });
 
+/*
 controller.storage.teams.all(function(err,teams) {
 
   if (err) {
