@@ -57,6 +57,7 @@ else{
 });
 }
 
+console.log(bot.config.token)
 // just a simple way to make sure we don't
 // connect to the RTM twice for the same team
 var _bots = {};
@@ -66,6 +67,9 @@ function trackBot(bot) {
 
 controller.on('create_bot',function(bot,config) {
 
+  if (_bots[bot.config.token]) {
+    // already online! do nothing.
+  } else {
 
     bot.startRTM(function(err) {
 
@@ -83,9 +87,8 @@ controller.on('create_bot',function(bot,config) {
       });
 
     });
-  
-
-});
+  }
+}s);
 
 
 // Handle events related to the websocket connection to Slack
