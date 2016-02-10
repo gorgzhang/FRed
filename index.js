@@ -61,11 +61,15 @@ else{
 });
 
 
+
+        var bot = controller.spawn({
+            token: slackToken
+        })
+
      //   trackBot(bot);
         bot.startRTM(function(err, bot, payload) {
 
-            console.log(bot.config)
-
+console.log(bot.config)
             bot.startPrivateConversation({user: bot.config.createdBy},function(err,convo) {
                 if (err) {
                     console.log(err);
