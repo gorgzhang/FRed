@@ -66,7 +66,7 @@ function trackBot(bot) {
 
 controller.on('create_bot',function(bot,config) {
 
- 
+
     bot.startRTM(function(err) {
 
       if (!err) {
@@ -83,7 +83,7 @@ controller.on('create_bot',function(bot,config) {
       });
 
     });
-  }
+  
 
 });
 
