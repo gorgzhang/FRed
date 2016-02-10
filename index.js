@@ -55,6 +55,9 @@ else{
   var controller = Botkit.slackbot({
   json_file_store: './db_slackbutton_bot/',
 });
+var bot = controller.spawn({
+  token: slackToken
+})
 }
 
 console.log(bot.config.token)
