@@ -162,7 +162,7 @@ controller.on('direct_message,mention,direct_mention',function(bot,message) {
   });
 });
 
-
+/*
 controller.storage.teams.all(function(err,teams) {
 
   if (err) {
@@ -185,3 +185,4 @@ controller.storage.teams.all(function(err,teams) {
 });
 
 
+*/
