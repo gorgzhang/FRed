@@ -65,12 +65,14 @@ else{
         var bot = controller.spawn({
             token: slackToken
         })
-
      //   trackBot(bot);
-        bot.startRTM(function(err, bot, payload) {
 
-console.log(bot.config)
-            bot.startPrivateConversation({user: bot.config.createdBy},function(err,convo) {
+    controller.on('create_bot',function(bot,config) {
+
+        bot.startRTM(function (err, bot, payload) {
+
+            console.log(bot.config)
+            bot.startPrivateConversation({user: bot.config.createdBy}, function (err, convo) {
                 if (err) {
                     console.log(err);
                 } else {
@@ -79,13 +81,14 @@ console.log(bot.config)
                 }
             });
 
-        });
+        })});
 
 
 
 
 
 }
+
 
 console.log(bot.config.token)
 // just a simple way to make sure we don't
