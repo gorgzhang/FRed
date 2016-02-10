@@ -14,7 +14,7 @@ else if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT
   process.exit(1);
 }
 
-
+console.log(beepBoop)
 
 /*
 var config = {}
@@ -52,7 +52,9 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
 });
 }
 else{
-  var controller = Botkit.slackbot();
+  var controller = Botkit.slackbot({
+  json_file_store: './db_slackbutton_bot/',
+});
 }
 
 // just a simple way to make sure we don't
