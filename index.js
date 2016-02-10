@@ -61,13 +61,7 @@ else{
 });
 
 
-    if (_bots[slackToken]) {
-        // already online! do nothing.
-    } else {
 
-        if (!err) {
-
-        }
 
         var bot = controller.spawn({
             token: slackToken
@@ -87,7 +81,7 @@ else{
             });
 
         });
-    }
+
 
 
 
