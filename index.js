@@ -9,53 +9,51 @@ function trackBot(bot) {
     _bots[bot.config.token] = bot;
 }
 
-if (slackToken)
-{
-  beepBoop = true;
+if (slackToken) {
+    beepBoop = true;
 }
 else if (!process.env.clientId || !process.env.clientSecret || !process.env.PORT) {
-  console.log('Error: Specify clientId clientSecret and port in environment');
-  process.exit(1);
+    console.log('Error: Specify clientId clientSecret and port in environment');
+    process.exit(1);
 }
 
-console.log(beepBoop)
+console.log(beepBoop);
 
 
-var config = {}
-if(process.env.MONGOLAB_URI) {
-  var BotkitStorage = require('botkit-storage-mongo');
-  config = {
-    storage:  BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
-  };
+var config = {};
+if (process.env.MONGOLAB_URI) {
+    var BotkitStorage = require('botkit-storage-mongo');
+    config = {
+        storage: BotkitStorage({mongoUri: process.env.MONGOLAB_URI}),
+    };
 } else {
-  config = {
-    json_file_store: './db_slackbutton_bot/',
-  };
+    config = {
+        json_file_store: './db_slackbutton_bot/',
+    };
 }
 
 
+if (!beepBoop) {
+    var controller = Botkit.slackbot(config).configureSlackApp(
+        {
+            clientId: process.env.clientId,
+            clientSecret: process.env.clientSecret,
+            scopes: ['bot'],
+        }
+    );
+    controller.setupWebserver(process.env.PORT, function (err, webserver) {
+        controller.createWebhookEndpoints(controller.webserver);
 
-if (!beepBoop){
-  var controller = Botkit.slackbot(config).configureSlackApp(
-  {
-    clientId: process.env.clientId,
-    clientSecret: process.env.clientSecret,
-    scopes: ['bot'],
-  }
-);
-controller.setupWebserver(process.env.PORT,function(err,webserver) {
-  controller.createWebhookEndpoints(controller.webserver);
+        controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
+            if (err) {
+                res.status(500).send('ERROR: ' + err);
+            } else {
+                res.send('Success!');
+            }
+        });
+    });
 
-  controller.createOauthEndpoints(controller.webserver,function(err,req,res) {
-    if (err) {
-      res.status(500).send('ERROR: ' + err);
-    } else {
-      res.send('Success!');
-    }
-  });
-});
-
-    controller.on('create_bot',function(bot,config) {
+    controller.on('create_bot', function (bot, config) {
 
         if (_bots[bot.config.token]) {
             // already online! do nothing.
@@ -65,10 +63,10 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
                 trackBot(bot);
             }
 
-            bot.startRTM(function(err, bot, payload) {
+            bot.startRTM(function (err, bot, payload) {
 
 
-                bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
+                bot.startPrivateConversation({user: config.createdBy}, function (err, convo) {
                     if (err) {
                         console.log(err);
                     } else {
@@ -82,6 +80,7 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     });
 
 }
+//If it's a BeepBoop instance, doesn't need ID or Secret nor setup server.
 else {
     var controller = Botkit.slackbot({
         json_file_store: './db_slackbutton_bot/',
@@ -90,8 +89,7 @@ else {
 //Spawn bot BeepBoop style
     var bot = controller.spawn({
         token: slackToken
-    })
-    //   trackBot(bot);
+    });
 
 
     bot.startRTM(function (err, bot, payload) {
@@ -104,13 +102,13 @@ else {
 }
 
 // Handle events related to the websocket connection to Slack
-controller.on('rtm_open',function(bot) {
-  console.log('** The RTM api just connected!');
+controller.on('rtm_open', function (bot) {
+    console.log('** The RTM api just connected!');
 });
 
-controller.on('rtm_close',function(bot) {
-  console.log('** The RTM api just closed');
-  // you may want to attempt to re-open
+controller.on('rtm_close', function (bot) {
+    console.log('** The RTM api just closed');
+    // you may want to attempt to re-open
 });
 
 
@@ -118,48 +116,51 @@ controller.on('rtm_close',function(bot) {
 
 controller.on('bot_channel_join', function (bot, message) {
     bot.reply(message, "I'm here!")
-})
-
-controller.hears('hello','direct_message',function(bot,message) {
-  bot.reply(message,'Hello!');
 });
 
-controller.hears('^stop','direct_message',function(bot,message) {
-  bot.reply(message,'Goodbye');
-  bot.rtm.close();
+controller.hears('hello', 'direct_message', function (bot, message) {
+    bot.reply(message, 'Hello!');
 });
 
-controller.on('direct_message,mention,direct_mention',function(bot,message) {
-  bot.api.reactions.add({
-    timestamp: message.ts,
-    channel: message.channel,
-    name: 'robot_face',
-  },function(err) {
-    if (err) { console.log(err) }
-    bot.reply(message,'I heard you loud and clear boss.');
-  });
+controller.hears('^stop', 'direct_message', function (bot, message) {
+    bot.reply(message, 'Goodbye');
+    bot.rtm.close();
 });
 
-if(!beepBoop){
-controller.storage.teams.all(function(err,teams) {
-
-  if (err) {
-    throw new Error(err);
-  }
-
-  // connect all teams with bots up to slack!
-  for (var t  in teams) {
-    if (teams[t].bot) {
-      var bot = controller.spawn(teams[t]).startRTM(function(err) {
+controller.on('direct_message,mention,direct_mention', function (bot, message) {
+    bot.api.reactions.add({
+        timestamp: message.ts,
+        channel: message.channel,
+        name: 'robot_face',
+    }, function (err) {
         if (err) {
-          console.log('Error connecting bot to Slack:',err);
-        } else {
-          trackBot(bot);
+            console.log(err)
         }
-      });
-    }
-  }
+        bot.reply(message, 'I heard you loud and clear boss.');
+    });
+});
 
-})}
+if (!beepBoop) {
+    controller.storage.teams.all(function (err, teams) {
+
+        if (err) {
+            throw new Error(err);
+        }
+
+        // connect all teams with bots up to slack!
+        for (var t  in teams) {
+            if (teams[t].bot) {
+                var bot = controller.spawn(teams[t]).startRTM(function (err) {
+                    if (err) {
+                        console.log('Error connecting bot to Slack:', err);
+                    } else {
+                        trackBot(bot);
+                    }
+                });
+            }
+        }
+
+    })
+}
 
 
