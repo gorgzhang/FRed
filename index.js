@@ -87,7 +87,7 @@ else {
         json_file_store: './db_slackbutton_bot/',
     });
 
-
+//Spawn bot BeepBoop style
     var bot = controller.spawn({
         token: slackToken
     })
