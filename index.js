@@ -82,26 +82,26 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     });
 
 }
-else{
-  var controller = Botkit.slackbot({
-  json_file_store: './db_slackbutton_bot/',
-});
+else {
+    var controller = Botkit.slackbot({
+        json_file_store: './db_slackbutton_bot/',
+    });
 
 
-        var bot = controller.spawn({
-            token: slackToken
-        })
-     //   trackBot(bot);
+    var bot = controller.spawn({
+        token: slackToken
+    })
+    //   trackBot(bot);
 
 
-        bot.startRTM(function (err, bot, payload) {
+    bot.startRTM(function (err, bot, payload) {
 
-            console.log(bot.config)
+        console.log(bot.config)
 
-        });
+    });
 
 
-
+}
 
 // Handle events related to the websocket connection to Slack
 controller.on('rtm_open',function(bot) {
@@ -160,6 +160,6 @@ controller.storage.teams.all(function(err,teams) {
     }
   }
 
-})}}
+})}
 
 
