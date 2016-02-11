@@ -54,6 +54,33 @@ controller.setupWebserver(process.env.PORT,function(err,webserver) {
     }
   });
 });
+
+    controller.on('create_bot',function(bot,config) {
+
+        if (_bots[bot.config.token]) {
+            // already online! do nothing.
+        } else {
+
+            if (!err) {
+                trackBot(bot);
+            }
+
+            bot.startRTM(function(err, bot, payload) {
+
+
+                bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
+                    if (err) {
+                        console.log(err);
+                    } else {
+                        convo.say('I am a bot that has just joined your team');
+                        convo.say('You must now /invite me to a channel so that I can be of use!');
+                    }
+                });
+
+            });
+        }
+    });
+
 }
 else{
   var controller = Botkit.slackbot({
@@ -61,70 +88,20 @@ else{
 });
 
 
-
         var bot = controller.spawn({
             token: slackToken
         })
      //   trackBot(bot);
 
-    controller.on('create_bot',function(bot,config) {
 
         bot.startRTM(function (err, bot, payload) {
 
             console.log(bot.config)
-            bot.startPrivateConversation({user: bot.config.createdBy}, function (err, convo) {
-                if (err) {
-                    console.log(err);
-                } else {
-                    convo.say('I am a bot that has just joined your team');
-                    convo.say('You must now /invite me to a channel so that I can be of use!');
-                }
-            });
 
-        })});
+        });
 
 
 
-
-
-}
-
-
-console.log(bot.config.token)
-// just a simple way to make sure we don't
-// connect to the RTM twice for the same team
-
-
-
-
-/*
-controller.on('create_bot',function(bot,config) {
-
-  if (_bots[bot.config.token]) {
-    // already online! do nothing.
-  } else {
-
-      if (!err) {
-          trackBot(bot);
-      }
-
-      bot.startRTM(function(err, bot, payload) {
-
-
-      bot.startPrivateConversation({user: config.createdBy},function(err,convo) {
-        if (err) {
-          console.log(err);
-        } else {
-          convo.say('I am a bot that has just joined your team');
-          convo.say('You must now /invite me to a channel so that I can be of use!');
-        }
-      });
-
-    });
-   }
-});
-
-*/
 
 // Handle events related to the websocket connection to Slack
 controller.on('rtm_open',function(bot) {
@@ -138,6 +115,10 @@ controller.on('rtm_close',function(bot) {
 
 
 // BEGIN EDITING HERE!
+
+controller.on('bot_channel_join', function (bot, message) {
+    bot.reply(message, "I'm here!")
+})
 
 controller.hears('hello','direct_message',function(bot,message) {
   bot.reply(message,'Hello!');
@@ -159,7 +140,7 @@ controller.on('direct_message,mention,direct_mention',function(bot,message) {
   });
 });
 
-/*
+if(!beepBoop){
 controller.storage.teams.all(function(err,teams) {
 
   if (err) {
@@ -179,7 +160,6 @@ controller.storage.teams.all(function(err,teams) {
     }
   }
 
-});
+})}}
 
 
-*/
