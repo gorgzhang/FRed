@@ -2,11 +2,6 @@
  * A Bot for Slack!
  */
 
-if (!process.env.PORT) {
-    console.log('Error: Please specify PORT in the environment');
-    process.exit(1);
-}
-
 
 /**
  * Define a function for initiating a conversation on installation
