@@ -60,54 +60,6 @@ if (process.env.TOKEN) {
     process.exit(1);
 }
 
-//if (!beepBoop) {
-//    var controller = Botkit.slackbot(config).configureSlackApp(
-//        {
-//            clientId: process.env.clientId,
-//            clientSecret: process.env.clientSecret,
-//            scopes: ['bot'],
-//        }
-//    );
-//    controller.setupWebserver(process.env.PORT, function (err, webserver) {
-//        controller.createWebhookEndpoints(controller.webserver);
-//
-//        controller.createOauthEndpoints(controller.webserver, function (err, req, res) {
-//            if (err) {
-//                res.status(500).send('ERROR: ' + err);
-//            } else {
-//                res.send('Success!');
-//            }
-//        });
-//    });
-//
-//    controller.on('create_bot', function (bot, config) {
-//
-//        if (_bots[bot.config.token]) {
-//            // already online! do nothing.
-//        } else {
-//
-//            if (!err) {
-//                trackBot(bot);
-//            }
-//
-//            bot.startRTM(function (err, bot, payload) {
-//
-//
-//                bot.startPrivateConversation({user: config.createdBy}, function (err, convo) {
-//                    if (err) {
-//                        console.log(err);
-//                    } else {
-//                        convo.say('I am a bot that has just joined your team');
-//                        convo.say('You must now /invite me to a channel so that I can be of use!');
-//                    }
-//                });
-//
-//            });
-//        }
-//    });
-//
-//}
-
 
 /**
  * A demonstration for how to handle websocket events. In this case, just log when we have and have not
@@ -158,28 +110,3 @@ controller.on('direct_message,mention,direct_mention', function (bot, message) {
         bot.reply(message, 'I heard you loud and clear boss.');
     });
 });
-
-//if (!beepBoop) {
-//    controller.storage.teams.all(function (err, teams) {
-//
-//        if (err) {
-//            throw new Error(err);
-//        }
-//
-//        // connect all teams with bots up to slack!
-//        for (var t  in teams) {
-//            if (teams[t].bot) {
-//                var bot = controller.spawn(teams[t]).startRTM(function (err) {
-//                    if (err) {
-//                        console.log('Error connecting bot to Slack:', err);
-//                    } else {
-//                        trackBot(bot);
-//                    }
-//                });
-//            }
-//        }
-//
-//    })
-//}
-
-
