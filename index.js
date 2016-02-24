@@ -47,16 +47,17 @@ if (process.env.MONGOLAB_URI) {
  * Are being run as an app or a custom integration? The initialization will differ, depending
  */
 
-if (process.env.TOKEN) {
+if (process.env.TOKEN || process.env.SLACK_TOKEN) {
     //Treat this as a custom integration
     var customIntegration = require('./lib/custom_integrations');
-    var controller = customIntegration.configure(process.env.PORT, process.env.TOKEN, config, onInstallation);
-} else if (process.env.CLIENTID && process.env.CLIENTSECRET) {
+    var token = (process.env.TOKEN) ? process.env.TOKEN : process.env.SLACK_TOKEN;
+    var controller = customIntegration.configure(token, config, onInstallation);
+} else if (process.env.CLIENTID && process.env.CLIENTSECRET && process.env.PORT) {
     //Treat this as an app
     var app = require('./lib/apps');
     var controller = app.configure(process.env.PORT, process.env.CLIENTID, process.env.CLIENTSECRET, config, onInstallation);
 } else {
-    console.log('Error: Please specify either one of: TOKEN or both CLIENTID and CLIENTSECRET in the environment');
+    console.log('Error: If this is a custom integration, please specify TOKEN in the environment. If this is an app, please specify CLIENTID, CLIENTSECRET, and PORT in the environment');
     process.exit(1);
 }
 
