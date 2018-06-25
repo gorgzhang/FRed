@@ -123,16 +123,6 @@ var HttpClient = function() {
     }
 }
 
-
-/*
-
-var client = new HttpClient();
-client.get('https://slack.com/api/users.list?token=xoxp-381215295269-380531089249-380542544096-a40fa70ac814805b02d6b6ca1352c02d&pretty=1', function(response) {
-	parsedJSON = JSON.parse(response)
-	userIds = parsedJSON.members
-	everything(userIds)
-}); */
-
 function everything() {
 	var meals = []
 	var lowerCaseMeals = []
