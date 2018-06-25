@@ -1,3 +1,4 @@
+process.title = 'FRed'
 /**
  * A Bot for Slack!
  */
@@ -106,3 +107,192 @@ controller.hears('hello', 'direct_message', function (bot, message) {
 //        bot.reply(message, 'I heard you loud and clear boss.');
 //    });
 //});
+
+var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest
+
+var HttpClient = function() {
+    this.get = function(aUrl, aCallback) {
+	var anHttpRequest = new XMLHttpRequest();
+	anHttpRequest.onreadystatechange = function() { 
+	    if (anHttpRequest.readyState == 4 && anHttpRequest.status == 200)
+		aCallback(anHttpRequest.responseText);
+	}
+
+	anHttpRequest.open( "GET", aUrl, true );            
+	anHttpRequest.send( null );
+    }
+}
+
+
+/*
+
+var client = new HttpClient();
+client.get('https://slack.com/api/users.list?token=xoxp-381215295269-380531089249-380542544096-a40fa70ac814805b02d6b6ca1352c02d&pretty=1', function(response) {
+	parsedJSON = JSON.parse(response)
+	userIds = parsedJSON.members
+	everything(userIds)
+}); */
+
+function everything() {
+	var meals = []
+	var lowerCaseMeals = []
+	var ids = []
+	var orders = []
+	var claimed = 0
+
+
+	function arrayToString(arr) {
+		var returnString = ""
+		for (var i = 0; i < arr.length; i++) {
+			if (arr[i] == "CLAIMED") {
+				continue;
+			}
+			returnString = returnString + arr[i].toString() + "\n"
+		}
+		return returnString
+	}
+
+	function getUserName(key) {
+		for (var i = 0; i < userIds.length; i++) {
+			if( userIds[i].id == key ) {
+				 return userIds[i].name;
+			}
+		}
+		return null
+	}
+
+	function addOrder(id) {
+		var done = false
+		/* 
+		for (var i = 0; i < orders.length; i++) {
+			if (orders[i][0] == id) {
+				orders[i][1] += 1
+				done = true
+			}
+		} */
+		if (!done) {
+			orders.push([id, 1])
+		}
+		claimed += 1
+	}
+
+	function canOrder(id) { 
+		for (var i = 0; i < orders.length; i++) {
+			if (orders[i][0] == id) {
+				if (orders[i][1] >= 1) {
+					return false
+				} else { 
+					return true
+				}
+			}
+		}
+		return true
+	}
+
+	controller.hears('ufg' , 'direct_message', function (bot, message) {	
+		if (message.text.toLowerCase().slice(0,4) == 'ufg ') {	
+			var messageStr = message.text;
+			meals.push((meals.length + 1).toString() + "." + messageStr.slice(3));
+			lowerCaseMeals.push(((meals.length + 1).toString() + "." + messageStr.slice(3)).toLowerCase())
+			ids.push(message.user)
+			bot.reply(message, "Added " + messageStr.slice(4));
+		} else {
+			bot.reply(message, "Incorrect input, type 'help' for available commands.")
+		}
+	});
+
+	controller.hears('list', 'direct_message', function(bot, message) {
+		if (meals.length == 0) {
+			bot.reply(message, "There is no food up for grabs :(");
+		}
+		bot.reply(message, arrayToString(meals));
+	});
+
+	controller.hears('SELECT *', 'direct_message', function(bot, message) {
+                if (meals.length == 0) {
+                        bot.reply(message, "There is no food up for grabs :(");
+                }
+                bot.reply(message, arrayToString(meals));
+        });
+
+	controller.hears('ls', 'direct_message', function(bot, message) {
+                if (meals.length == 0) {
+                        bot.reply(message, "There is no food up for grabs :(");
+                }
+                bot.reply(message, arrayToString(meals));
+        });
+
+	controller.hears('claim', 'direct_message', function(bot, message) {
+		if (message.text.toLowerCase().slice(0,5) == 'claim') {
+			if (canOrder(message.user)) {		
+				var number = parseInt(message.text.toLowerCase().slice(5).replace(/\s/g, ""));
+				if (number != 0 && number > meals.length) {
+					bot.reply(message, "Error: Order number not available")
+				} else {
+					if (meals[number-1] == "CLAIMED") {
+						bot.reply(message, "This meal has already been claimed.");
+						return;
+					}
+					claimedMeal = meals[number - 1].slice(meals[number - 1].indexOf(' '));
+					addOrder(message.user)
+					meals[number - 1] = 'CLAIMED';
+					lowerCaseMeals[number - 1] = ' '
+					bot.reply(message, 'Claimed order' + message.text.slice(5) + ".\nName: <@" + ids[number-1] +  ">\nFood details: " +  claimedMeal);
+				}
+			} else {
+				bot.reply(message, 'You have already ordered today.')
+			}
+		} else {
+			bot.reply(message, "Incorrect input, type 'help' for available commands.")
+		}
+	});
+
+	controller.hears('search', 'direct_message', function(bot, message) {
+		var searchArray = []
+		var term = message.text.slice(6).replace(/\s/g, "")
+		for (var i = 0; i < meals.length; i++) {
+			if (lowerCaseMeals[i].includes(term.toLowerCase())) {
+				searchArray.push(meals[i])
+			}
+		}
+		if (searchArray.length == 0) {
+			bot.reply(message, "No results found.");
+		}
+		bot.reply(message, arrayToString(searchArray))
+	});
+
+	controller.hears('help', 'direct_message', function(bot, message) {
+		bot.reply(message, '‘ufg <food details>’ →  puts your food up for grabs\n' +
+				   '‘claim <food number>’ →  claims an item up for grabs\n' +
+				   '‘list’ →  lists all the items up for grabs\n' +
+				   '‘search <word>’ →  looks for a specific word in the title\n' +
+				   '‘stats’ →  shows stats corresponding to claimed food\n' + 
+				   '‘orders’ →  sees how many times you’ve ordered this week');
+	});
+
+	controller.hears('orders', 'direct_message', function(bot, message) {
+		var notSeen = true
+		for (var i = 0; i < orders.length; i++) {
+			if (orders[i][0] == message.user) {
+				bot.reply(message, 'You have claimed ' + orders[i][1].toString() + ' orders this week (2 orders max per week)')
+				notSeen = false
+			}
+		}
+
+		if (notSeen) {
+			bot.reply(message, 'You have not claimed any orders this week (2 orders max per week)')
+		}
+	});
+
+	controller.hears('stats', 'direct_message', function(bot, message) {
+		bot.reply(message, (claimed/meals.length * 100).toString() + '% of meals put ufg were claimed.\n' +
+				   '$' + (15 * claimed).toString() + ' not gone to waste.'
+				   ) 
+	});
+
+
+
+
+}
+
+everything() 
